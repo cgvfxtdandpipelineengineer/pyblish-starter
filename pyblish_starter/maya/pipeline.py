@@ -51,7 +51,8 @@ def _install_menu():
 
 
 def _uninstall_menu():
-    widgets = dict((w.objectName(), w) for w in QtWidgets.qApp.allWidgets())
+    qApp = QtWidgets.QApplication.instance()
+    widgets = dict((w.objectName(), w) for w in qApp.allWidgets())
     menu = widgets.get(self.menu)
 
     if menu:
