@@ -2,6 +2,12 @@
 
 from maya import cmds, mel
 
+# Compatibility layer for Python 2 and 3
+try:
+    basestring
+except NameError:
+    basestring = str
+
 
 def read(node):
     """Return user-defined attributes from `node`
