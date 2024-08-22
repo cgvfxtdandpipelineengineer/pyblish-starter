@@ -3,12 +3,33 @@ from capture import capture
 import ffmpeg
 import os #for controlling file and folder path
 
-all_cameras = cmds.ls(type = 'camera')
 
-list_of_videos = []
+
+def get_cameras():
+    all_cameras = cmds.ls(type = 'camera')
+
+    cameras = []
+    for camera in all_cameras:
+        if camera.startswith("CAM"):
+            cameras.append(camera)
+
+    return cameras
+
+
+def get_output_directory():
+    return "C:/Users/SatishGoda/Documents/MayaOutputVideos/test1"
+
+
+def get_output_file(filename):
+    return os.path.join(get_output_directory(), filename)
+
+
+def get_all_paths_file(filename):
+    return os.path.join(get_output_directory(), filename)
+
 
 def capturing_videos(all_cameras, output_directory):
-    global list_of_videos
+    list_of_videos = []
 
     #checking if the directory exists
     if not os.path.exists(output_directory):
@@ -20,17 +41,19 @@ def capturing_videos(all_cameras, output_directory):
         list_of_videos.append(output_path)
        
         capture(i, 800, 600,
-        viewport_options={
-            "displayAppearance": "wireframe",
-            "grid": True,
-            "polymeshes": True,
-        },
-        camera_options={
-            "displayResolution": True
-        },
-        filename=output_path, 
-        overwrite = True
-       )
+            viewport_options={
+                # "displayAppearance": "wireframe",
+                "grid": True,
+                "polymeshes": True,
+            },
+            camera_options={
+                "displayResolution": True
+            },
+            filename=output_path, 
+            overwrite = True,
+        )
+    
+    return list_of_videos
     
     
 def combine_videos(list_of_videos, output_file, all_paths):
@@ -53,18 +76,21 @@ def combine_videos(list_of_videos, output_file, all_paths):
         print('stderr:', e.stderr.decode('utf8') if e.stderr else "No stderr output")
         raise e
         
-    if os.path.exists(all_paths):
-        os.remove(all_paths)
+    #if os.path.exists(all_paths):
+    #    os.remove(all_paths)
      
-output_directory = "C:/Users/aluaa/Documents/MayaOutputVideos/test1"   
-output_file = os.path.join(output_directory, "combined_video_test1.mov")
-all_paths = os.path.join(output_directory, "my_videos.txt")
 
-#capturing_videos(all_cameras, output_directory) #calling the function to playblast everything
+if __name__ == "__main__":
+    all_cameras = get_cameras()
+    output_directory = get_output_directory()
+    output_file = get_output_file("combined_video_test1.mov")
+    all_paths = get_all_paths_file("all_paths.txt")
 
-'''
-try:
-    combine_videos(list_of_videos, output_file, all_paths)
-except Exception as e:
-    print("Error during video combination:", e)
-'''
+    list_of_videos = capturing_videos(all_cameras, output_directory)
+
+    #capturing_videos(all_cameras, output_directory) #calling the function to playblast everything
+
+    try:
+        combine_videos(list_of_videos, output_file, all_paths)
+    except Exception as e:
+        print("Error during video combination:", e)
