@@ -1,3 +1,4 @@
+import os
 import maya.cmds as cmds
 from capture import capture
 import ffmpeg
@@ -17,7 +18,9 @@ def get_cameras():
 
 
 def get_output_directory():
-    return "C:/Users/SatishGoda/Documents/MayaOutputVideos/test1"
+    home_dir = os.path.expanduser('~')
+    output_dir = os.path.join(home_dir, "Documents", "MayaOutputVideos", "test1")
+    return output_dir
 
 
 def get_output_file(filename):
