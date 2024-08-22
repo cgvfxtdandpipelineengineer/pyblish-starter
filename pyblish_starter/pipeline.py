@@ -6,8 +6,11 @@ import shutil
 import logging
 import tempfile
 import contextlib
+from PySide2 import QtWidgets
+from PySide2.QtWidgets import QMainWindow, QApplication, QLabel, QVBoxLayout, QComboBox, QWidget, QPushButton
 
 from pyblish import api
+
 
 from . import lib, schema
 
@@ -111,12 +114,10 @@ def is_installed():
 
     return self._is_installed
 
-
 def register_default_data():
     register_data(key="id", value="pyblish.starter.instance")
     register_data(key="name", value="{name}")
     register_data(key="family", value="{family}")
-
 
 def register_default_families():
     register_family(
@@ -134,6 +135,11 @@ def register_default_families():
         help="Pointcache"
     )
 
+    register_family(
+        name="starter.playblast",
+        help="Preview render of the animation"
+    )
+    
 
 def ls(root=None):
     """List available assets
@@ -370,6 +376,49 @@ def register_family(name, data=None, help=None):
         "help": help or ""
     })
 
+
+#my_code
+'''def is_playblast_registered():
+    families = self._registered_families
+    for family in families:
+        if family["name"] == "starter.playblast":
+            return True
+        return False
+
+if is_playblast_registered():
+    print ("we did it")       
+
+    my_window = QMainWindow()
+    my_window.setWindowTitle("Pyblish Starter Playblast")
+
+    my_layout = QVBoxLayout()
+    my_comboBox = QComboBox()
+    camera_options = ['CAM1', 'CAM2', 'CAM3']
+    my_comboBox.addItems(camera_options)
+
+    playblast_button = QPushButton("playblast specific camera")
+    playblast_button.setStyleSheet("background-color: white; color:black")
+
+    combine_button = QPushButton("combine all cameras")
+    combine_button.setStyleSheet("background-color: white; color:black")
+    
+    my_layout.addWidget(my_comboBox)
+    my_layout.addWidget(playblast_button)
+    my_layout.addWidget(combine_button)
+    central_widget = QWidget()
+    central_widget.setLayout(my_layout)
+    my_window.setCentralWidget(central_widget)
+    my_window.show()
+else:
+    print("not yet")
+
+class MyWindow(QMainWindow):
+    def __init__(self):
+        super.__init__()
+        self.setWindowTitle("Pyblish Starter Playblast")
+        self.label = QLabel("starter.playblast is selected", self)
+        self.label.move(20, 20)
+'''
 
 def registered_formats():
     return self._registered_formats[:]

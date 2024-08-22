@@ -1,8 +1,9 @@
 import sys
-
+from . import new_combine #my_code
 from ...vendor.Qt import QtWidgets, QtCore
 from ... import pipeline
 from .. import lib
+from PySide2.QtWidgets import QMainWindow, QApplication, QLabel, QVBoxLayout, QComboBox, QWidget, QPushButton, QDialog, QGridLayout
 
 self = sys.modules[__name__]
 self._window = None
@@ -77,11 +78,55 @@ class Window(QtWidgets.QDialog):
         name.returnPressed.connect(self.on_create)
         name.textChanged.connect(self.on_data_changed)
         listing.currentItemChanged.connect(self.on_data_changed)
+        listing.itemDoubleClicked.connect(self.on_item_double_clicked) #my code
 
         # Defaults
         self.resize(220, 250)
         name.setFocus()
         create_btn.setEnabled(False)
+
+    #my_code
+    def on_item_double_clicked(self, item):
+        name = item.text()
+        if name == "starter.playblast":
+            print("HAHAHAHAHHAHA")
+            self.close()
+
+            my_window = QDialog(self)
+            my_window.setFixedSize(200, 150)
+
+            my_layout = QVBoxLayout()
+            my_comboBox = QComboBox()
+            camera_options = ['CAM1', 'CAM2', 'CAM3']
+            my_comboBox.addItems(camera_options)
+
+            playblast_button = QPushButton("playblast specific camera")
+            playblast_button.setStyleSheet("background-color: white; color:black")
+
+            combine_button = QPushButton("combine all cameras")
+            combine_button.setStyleSheet("background-color: white; color:black")
+            combine_button.clicked.connect(self._combine_playblasts)
+            
+            my_layout.addWidget(my_comboBox)
+            my_layout.setContentsMargins(0, 0, 0, 0)
+
+            my_layout.addWidget(playblast_button)
+            my_layout.setContentsMargins(5, 5, 5, 5)
+           
+            my_layout.addWidget(combine_button)
+            my_layout.setSpacing(20)
+            my_window.setLayout(my_layout)
+            my_window.show()
+
+    def _combine_playblasts(self):
+
+        new_combine.capturing_videos(new_combine.all_cameras, new_combine.output_directory)
+
+        list_of_videos = new_combine.list_of_videos
+        output_file = new_combine.output_file
+        all_paths = new_combine.all_paths
+
+        new_combine.combine_videos(list_of_videos, output_file, all_paths)
 
     def on_data_changed(self, *args):
         button = self.findChild(QtWidgets.QPushButton, "Create Button")
@@ -95,7 +140,7 @@ class Window(QtWidgets.QDialog):
 
     def keyPressEvent(self, event):
         """Custom keyPressEvent.
-
+        
         Override keyPressEvent to do nothing so that Maya's panels won't
         take focus when pressing "SHIFT" whilst mouse is over viewport or
         outliner. This way users don't accidently perform Maya commands
@@ -174,6 +219,7 @@ def show(debug=False):
         families.append({"name": "debug.model"})
         families.append({"name": "debug.rig"})
         families.append({"name": "debug.animation"})
+        families.append({"name": "debug.playblast"})
 
     try:
         widgets = QtWidgets.QApplication.topLevelWidgets()

@@ -51,12 +51,13 @@ def _install_menu():
 
 
 def _uninstall_menu():
-    widgets = dict((w.objectName(), w) for w in QtWidgets.qApp.allWidgets())
+    app = QtWidgets.QApplication.instance()
+    widgets = dict((w.objectName(), w) for w in app.allWidgets())
     menu = widgets.get(self.menu)
 
     if menu:
         menu.deleteLater()
-        del(menu)
+        del menu
 
 
 def _register_formats():
