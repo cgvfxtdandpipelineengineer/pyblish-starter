@@ -5,3 +5,5 @@ cover
 stage
 shared
 _site
+*__pycache__*
+*.pyc
