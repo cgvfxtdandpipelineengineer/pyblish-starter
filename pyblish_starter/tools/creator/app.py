@@ -97,7 +97,7 @@ class Window(QtWidgets.QDialog):
 
             my_layout = QVBoxLayout()
             my_comboBox = QComboBox()
-            camera_options = ['CAM1', 'CAM2', 'CAM3']
+            camera_options = new_combine.get_cameras()
             my_comboBox.addItems(camera_options)
 
             playblast_button = QPushButton("playblast specific camera")
@@ -120,11 +120,13 @@ class Window(QtWidgets.QDialog):
 
     def _combine_playblasts(self):
 
-        new_combine.capturing_videos(new_combine.all_cameras, new_combine.output_directory)
+        all_cameras = new_combine.get_cameras()
+        output_directory = new_combine.get_output_directory()
 
-        list_of_videos = new_combine.list_of_videos
-        output_file = new_combine.output_file
-        all_paths = new_combine.all_paths
+        list_of_videos = new_combine.capturing_videos(all_cameras, output_directory)
+
+        output_file = new_combine.get_output_file("combined_video_test1.mov")
+        all_paths = new_combine.get_all_paths_file("my_videos.txt")
 
         new_combine.combine_videos(list_of_videos, output_file, all_paths)
 
